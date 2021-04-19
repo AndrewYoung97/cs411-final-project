@@ -1,13 +1,19 @@
 # Run the program
 
-First, activate the virtual environment
+First, install virtual environment named `.venv` 
+`python -m venv .venv`
 
+Then, activate the virtual environment
 on linux:
 `. venv/bin/activate`
+
 on Windows:
 `.venv\Scripts\activate`
 
-Then run flask with
+Then, install dependencies in the virtual environment:
+`python -m pip install -r ./requirements.txt`
+
+Then run server with
 
 `flask run`
 or
@@ -15,7 +21,7 @@ or
 
 database connection is stored app.yaml, which should be in the same directory as main.py
 OR
-use replace the environ variables with string
+replace the environ variables with string
 # Output
 
 The return value from the server, aka what you should get from `locahlhost:5000` when you start the server is stored in the [output.txt](output.txt) file. You can try different queries.
@@ -33,6 +39,7 @@ https://code.visualstudio.com/docs/python/environments
 * TODO:
 
 https://docs.sqlalchemy.org/en/14/orm/extensions/automap.html
+
 task: 
 figure out the best way to work with complex query
 figure out the return type of the flask
