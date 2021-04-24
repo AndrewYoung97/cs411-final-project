@@ -1,8 +1,8 @@
 import { BrowserRouter, Route, Switch } from "react-router-dom";
-import NavBar from './components/navBar';
-import BookMenu from './components/bookMenu';
+import NavBar from './components/NavBar';
+import BookMenu from './components/BookMenu';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import AddBook from "./components/addBook";
+import AddBook from "./components/AddBook";
 import Login from './components/login';
 import Register from './components/register';
 

@@ -41,9 +41,9 @@ https://code.visualstudio.com/docs/python/environments
 https://docs.sqlalchemy.org/en/14/orm/extensions/automap.html
 
 task: 
-figure out the best way to work with complex query
-figure out the return type of the flask
-what is the return type of flask server/jsonify: https://stackoverflow.com/a/11884806/13284811
+* trigger idea: auto insert into `author` table when a book with a new author name is added.
+* figure out the return type of the flask
+* what is the return type of flask server/jsonify: https://stackoverflow.com/a/11884806/13284811
 
 
 

@@ -1,12 +1,10 @@
 import os
 import sqlalchemy 
-from sqlalchemy.ext.automap import automap_base
-from sqlalchemy.orm import Session
 from yaml import load, Loader
 from flask import Flask
 
 
-Base = automap_base()
+# Base = automap_base() 
 
 
 def init_connect_engine():
@@ -21,8 +19,8 @@ def init_connect_engine():
             drivername="mysql+pymysql",
             username=os.environ.get('DB_USER'),
             password=os.environ.get('DB_PASS'),
-            database='sakila',
-            host='localhost'
+            database=os.environ.get('DB_NAME'),
+            host=os.environ.get('DB_HOST')
         )
     )
     return pool

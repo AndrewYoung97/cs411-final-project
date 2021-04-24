@@ -21,3 +21,5 @@ def fetch_book():
     output = [dict(row) for row in results]
     return jsonify(output)
 
+def add_author(authorName):
+    connection = db.connect()
