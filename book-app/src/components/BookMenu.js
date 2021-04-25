@@ -1,46 +1,43 @@
 import axios from "axios"
 import Card from 'react-bootstrap/card';
 import Button from 'react-bootstrap/button';
-import {useEffect, useState} from "react";
-import {ListGroup, ListGroupItem, Row} from "react-bootstrap";
-
+import { useEffect, useState } from "react";
+import { ListGroup, ListGroupItem, Row } from "react-bootstrap";
+import { Link } from "react-router-dom";
 
 function BookMenu() {
     const [books, setBooks] = useState([]);
 
     useEffect(() => {
-        async function getData() {
-            const response = await axios.get("/books")
-            const books = response.data
-            setBooks(books)
-        }
-
-        getData()
+        axios.get("/books").then(res => setBooks(res.data))
     }, [])
 
     return (
         <div>
-            <Button variant="success" className="mb-2">Add New Book</Button>
+            <Link to='/books/new'>
+                <Button variant="success" className="mb-2">Add New Book</Button>
+            </Link>
             {books.map(book => {
                 return (
                     <Card className="mb-3" border="light">
                         <Row>
                             <div className="col-md-4">
-                                <Card.Img variant="top" src={book['image_url']}/>
+                                <Card.Img variant="top" src={book['image_url']} />
                             </div>
                             <div className="col-md-8">
                                 <Card.Header as={'h3'}>
-                                    <a href={book['book_url']} style={{color: 'black'}}>{book.title}</a>
+                                    <a href={book['book_url']} style={{ color: 'black' }}>{book.title}</a>
                                 </Card.Header>
                                 <ListGroup className="list-group-flush">
-                                    <ListGroupItem>Author: {book['authors'].join(', ')}</ListGroupItem>
-                                    <ListGroupItem>ISBN: {book['ISBN']}</ListGroupItem>
-                                    <ListGroupItem>Rating Count: {book['rating_count']}</ListGroupItem>
-                                    <ListGroupItem>Rating Value: {book['rating_value']}</ListGroupItem>
+                                    <ListGroupItem>Author: {book['author_name']}</ListGroupItem>
+                                    <ListGroupItem>ISBN: {book['isbn']}</ListGroupItem>
+                                    <ListGroupItem>Rating Value: {book['avg_rating']}</ListGroupItem>
                                     <ListGroupItem>Review Count: {book['review_count']}</ListGroupItem>
                                 </ListGroup>
                                 <Card.Body>
-                                    <Button className="mr-2" variant="primary">Edit</Button>
+                                    <Link to={{ pathname:`/books/${book['book_id']}/edit`, book: book }}>
+                                        <Button className="mr-2" variant="primary">Edit</Button>
+                                    </Link>
                                     <Button variant="warning">Delete</Button>
                                 </Card.Body>
                             </div>

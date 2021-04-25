@@ -23,7 +23,7 @@ function Register(props) {
     return (
         <Container>
             <Row className='justify-content-md-center'>
-                <h1>Login</h1>
+                <h1>Register</h1>
             </Row>
             <Row className='col-6 offset-3 justify-content-md-center'>
                 <Form className='container mt-4' onSubmit={submitRegister}>

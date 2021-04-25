@@ -2,10 +2,7 @@ import os
 import sqlalchemy 
 from yaml import load, Loader
 from flask import Flask
-
-
-# Base = automap_base() 
-
+from flask_cors import CORS
 
 def init_connect_engine():
     if os.environ.get("GAE_ENV") != 'standard':
@@ -23,20 +20,12 @@ def init_connect_engine():
             host=os.environ.get('DB_HOST')
         )
     )
+    
     return pool
 
 db = init_connect_engine()
-"""
-Base.prepare(db, reflect=True)
-
-Book = Base.classes.actor
-
-session = Session(db)
-
-session.add(Book(first_name="Facebook"))
-session.commit()
-"""
 
 app = Flask(__name__)
+# CORS(app)
 
-from app import routes
+from goodreads_app import routes

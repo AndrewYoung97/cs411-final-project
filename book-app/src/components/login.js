@@ -9,7 +9,8 @@ function Login() {
     const [username, setUsername] = useState(null);
     const [password, setPassword] = useState(null);
 
-    const submitLogin = () => {
+    const submitLogin = (e) => {
+        e.preventDefault()
         axios.post('/login', {
             username: username,
             password: password
