@@ -43,6 +43,40 @@ FROM
 WHERE
     b.title = 'A Treasury of Kahlil Gibran';
 
+-- trigger to insert a book with fields in different tables
+delimiter //
+CREATE TRIGGER verify BEFORE INSERT ON book
+	FOR EACH ROW
+    BEGIN
+		IF NEW.authors NOT IN (
+			SELECT @output = author_id
+            FROM author
+            WHERE (NEW.authors = author_name)
+		) THEN 
+			INSERT INTO author (author_id, author_name) VALUES (null, NEW.authors);
+			SET NEW.authors = LAST_INSERT_ID();
+		ELSE 
+			INSERT INTO author (author_id, author_name) VALUES (@output, NEW.authors);
+        END IF;
+	END;//
+delimiter ;
+
+
+insert into author (author_id, author_name) 
+			values (null, 'start star');
+insert into book (authors, book_id, title)
+			value (LAST_INSERT_ID(), null, 'new title');
+
+-- unique
+DELETE t1
+FROM author t1 INNER JOIN author t2
+WHERE t1.author_name = t2.author_name; 
+
+create unique index unique_name on author (author_name);
+-- doesn't work
+insert into book (authors, book_id, title)
+			value ("hello", null, 'new title');
+
 -- auto increment id for author and book
 insert into author (author_id, author_name) values (null, 'start star');
 

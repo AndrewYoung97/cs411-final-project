@@ -36,8 +36,13 @@ https://code.visualstudio.com/docs/python/environments
 `$env:FLASK_APP="app"`
 `$env:FLASK_DEBUG=1`
 
-* TODO:
+or on linux
+`export FLASK_ENV=development`
 
+* TODO:
+* sqlalchemy reference:
+https://docs.sqlalchemy.org/en/14/core/tutorial.html
+(automap not implemented)
 https://docs.sqlalchemy.org/en/14/orm/extensions/automap.html
 
 task: 
