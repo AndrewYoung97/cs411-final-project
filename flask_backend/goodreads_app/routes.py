@@ -21,6 +21,11 @@ def handleBookByID(id):
 @app.route("/books/new", methods=['POST'])
 def addBook():
     data = request.get_json()
-    # print(data)
+    #add author before add the book, get the author id
+    authorId = add_author(data['author'])
+    data['author'] = authorId
+    result = add_book(data)
+    print(result)
+
     # :TODO
     return make_response('Success', 200)

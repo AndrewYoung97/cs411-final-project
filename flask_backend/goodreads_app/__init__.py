@@ -1,8 +1,8 @@
 import os
-import sqlalchemy 
+from sqlalchemy import create_engine
+from sqlalchemy.engine import url
 from yaml import load, Loader
 from flask import Flask
-from flask_cors import CORS
 
 def init_connect_engine():
     if os.environ.get("GAE_ENV") != 'standard':
@@ -11,8 +11,8 @@ def init_connect_engine():
         for var in env_variables:
             os.environ[var] = env_variables[var]
 
-    pool = sqlalchemy.create_engine(
-        sqlalchemy.engine.url.URL(
+    pool = create_engine(
+        url.URL(
             drivername="mysql+pymysql",
             username=os.environ.get('DB_USER'),
             password=os.environ.get('DB_PASS'),

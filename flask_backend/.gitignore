@@ -1,4 +1,3 @@
-#ignore all dot folders
 .venv/
 
 *.pyc

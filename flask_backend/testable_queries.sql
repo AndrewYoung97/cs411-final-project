@@ -42,6 +42,39 @@ FROM
     book b ON b.book_id = s.book_id
 WHERE
     b.title = 'A Treasury of Kahlil Gibran';
+-- stored procedure
+DROP PROCEDURE add_book;
+delimiter //
+CREATE PROCEDURE add_book(
+		IN titleIn VARCHAR(200), urlIn VARCHAR(200), isbnIn INT, authorIn INT)
+BEGIN
+DECLARE addSucess INT;
+
+DECLARE EXIT HANDLER FOR sqlexception
+BEGIN
+	GET diagnostics CONDITION 1
+    @p1 = returned_sqlstate, @p2 = message_text;
+    SELECT @pa1, @p2;
+ROLLBACK;
+END;
+
+	IF EXISTS (SELECT 1 FROM book WHERE title = titleIn) THEN
+		SET addSucess = 0;
+	ELSE 
+		INSERT INTO book (authors, title, url, book_id)
+			VALUES (authorIn, titleIn, urlIn, null);
+        SET addSucess = 1;
+	END IF;
+    SELECT addSucess;
+END//
+delimiter ;
+CALL add_book("Dark Sons", "google.com", 1232312, 11102113);
+CALL add_book("steve king", "aggo.com", 3, 3);
+
+INSERT INTO book (authors, book_id, title) VALUES (5, null, 'facebbok');
+SELECT @var;
+SELECT * FROM book WHERE authors  = 3;
+
 
 -- trigger to insert a book with fields in different tables
 delimiter //
@@ -60,19 +93,37 @@ CREATE TRIGGER verify BEFORE INSERT ON book
         END IF;
 	END;//
 delimiter ;
-
+drop trigger verify;
 
 insert into author (author_id, author_name) 
 			values (null, 'start star');
 insert into book (authors, book_id, title)
 			value (LAST_INSERT_ID(), null, 'new title');
 
--- unique
-DELETE t1
-FROM author t1 INNER JOIN author t2
-WHERE t1.author_name = t2.author_name; 
 
-create unique index unique_name on author (author_name);
+-- delete duplicate, worked
+CREATE TABLE author_copy_t 
+LIKE author;
+
+INSERT INTO author_copy_t
+SELECT any_value(rating_avg) as rating_avg, any_value(author_id) as id, any_value(count_review) as count_review, author_name, any_value(count_rating) as count_rating
+FROM author
+GROUP by author_name;
+ alter table author rename to author_orig;
+ alter TABLE author rename to author_new;
+
+-- delete non matching rows in book table
+DELETE FROM book
+WHERE  NOT EXISTS (
+   SELECT * FROM author_new an
+   WHERE  an.author_id = book.authors
+   );
+   
+
+-- unique
+create unique index unique_name on author_copy_t (author_name);
+create unique index unique_title on book (title);
+
 -- doesn't work
 insert into book (authors, book_id, title)
 			value ("hello", null, 'new title');
@@ -92,8 +143,11 @@ alter table book auto_increment = 36485480;
 
 
 -- useful (not exclusive) statement to add FK and PK
+alter table book 
+	drop foreign key book_ibfk_1;
+
 alter table book
-	add foreign key (authors) references author(author_id)
+	add foreign key (authors) references author_new(author_id)
     on update cascade
     on delete restrict;
     
