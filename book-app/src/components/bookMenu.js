@@ -9,7 +9,7 @@ function BookMenu() {
     const [books, setBooks] = useState([]);
 
     useEffect(() => {
-        axios.get("/books").then(res => setBooks(res.data))
+        axios.get("/books").then(res => setBooks(res.data)).catch(err => console.log(err.response.data['message']))
     }, [])
 
     return (
@@ -35,10 +35,9 @@ function BookMenu() {
                                     <ListGroupItem>Review Count: {book['review_count']}</ListGroupItem>
                                 </ListGroup>
                                 <Card.Body>
-                                    <Link to={{ pathname:`/books/${book['book_id']}/edit`, book: book }}>
-                                        <Button className="mr-2" variant="primary">Edit</Button>
+                                    <Link to={{ pathname: `/books/${book['book_id']}`, book: book }}>
+                                        <Button className="mr-2" variant="primary">Detail</Button>
                                     </Link>
-                                    <Button variant="warning">Delete</Button>
                                 </Card.Body>
                             </div>
                         </Row>

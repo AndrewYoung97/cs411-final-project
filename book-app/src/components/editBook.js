@@ -28,7 +28,7 @@ function EditBook() {
             bookUrl: bookUrl,
             isbn: isbn,
             author: author
-        }).then(() => history.push('/'))
+        }).then(() => history.push(`/books/${id}`))
     }
 
     return (
