@@ -23,6 +23,7 @@ function EditBook() {
     const submitBook = (e) => {
         e.preventDefault()
         axios.put(`/books/${id}`, {
+            bookId: id,
             bookTitle: bookTitle,
             bookUrl: bookUrl,
             isbn: isbn,
