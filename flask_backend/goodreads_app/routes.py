@@ -1,29 +1,37 @@
 from goodreads_app import app
-from flask import render_template, request, jsonify, make_response
+from flask import render_template, request, jsonify, make_response, abort
 from goodreads_app.db_helper import *
-from goodreads_app.error import Error
 
-@app.errorhandler(Error)
+
+@app.errorhandler(400)
 def handle_error(error):
-    response = jsonify(error.to_dict())
-    response.status_code = error.status_code
-    return response
+    return jsonify(error=str(error)), 400
 
 @app.route("/books")
 def home():
-    title = request.args.get('title')
-    author = request.args.get('author')
-    if not title and not author:
-        return fetch_book()
+    try:
+        #title = request.args.get('title')
+        #author = request.args.get('author')
+        #need to get json here
+        #pass json
+        result = search_book()
+        if result is None:
+            abort(400, "Fetch Failed")
+    except TypeError as err:
+        print(type(err))
+        print(err.args)
     
 @app.route("/books/<id>", methods=['PUT', 'DELETE'])
 def handleBookByID(id):
     if request.method == 'PUT':
         data = request.get_json()
-        update_book(data)
+        result = update_book(data)
+        if result == 0:
+            abort(400, "Update failed")
     if request.method == 'DELETE':
-        # :TODO
-        print(data)
+        result = delete_book(id)
+        if result == 0:
+            abort(400, "Delete failed")
     return make_response('Success', 200)
 
 @app.route("/books/new", methods=['POST'])
@@ -34,6 +42,6 @@ def addBook():
         authorId = add_author(data['author'])
         data['author'] = authorId
         result = add_book(data)
-        print(result)
-    # :TODO
+        if result == 0:
+            abort(400, "Add failed")
     return make_response('Success', 200)
