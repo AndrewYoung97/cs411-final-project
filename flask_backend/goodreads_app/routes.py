@@ -9,20 +9,20 @@ def handle_error(error):
 
 @app.route("/books")
 def home():
-    try:
-        #title = request.args.get('title')
-        #author = request.args.get('author')
-        #need to get json here
-        #pass json
-        result = search_book()
-        if result is None:
-            abort(400, "Fetch Failed")
-    except TypeError as err:
-        print(type(err))
-        print(err.args)
+    title = request.args.get('title')
+    author = request.args.get('author')
+    if title or author:
+        result = search_book(title, author)
+    else:
+        result = fetch_book()
+    if result is None:
+        abort(400, "Fetch Failed")
+    return result
     
-@app.route("/books/<id>", methods=['PUT', 'DELETE'])
+@app.route("/books/<id>", methods=['PUT', 'DELETE', 'GET'])
 def handleBookByID(id):
+    if request.method == 'GET':
+        return search_bookID(id)
     if request.method == 'PUT':
         data = request.get_json()
         result = update_book(data)

@@ -9,7 +9,7 @@ function BookMenu() {
     const [books, setBooks] = useState([]);
 
     useEffect(() => {
-        axios.get("/books").then(res => setBooks(res.data)).catch(err => console.log(err.response.data['message']))
+        axios.get("/books").then(res => {setBooks(res.data)}).catch(err => console.log(err.response.data['message']))
     }, [])
 
     return (

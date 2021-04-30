@@ -1,16 +1,23 @@
 import axios from "axios"
 import Card from 'react-bootstrap/card';
 import Button from 'react-bootstrap/button';
-import { useHistory, useParams, useLocation } from "react-router-dom";
+import { useHistory, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { ListGroup, ListGroupItem, Row } from "react-bootstrap";
 import { Link } from "react-router-dom";
 
 function BookDetail() {
-    const book = useLocation().book
+    const history = useHistory()
+    const { id } = useParams()
+    const [book, setBook] = useState([])
+
+    useEffect(() => {
+        console.log(id)
+        axios.get(`/books/${id}`).then(res => setBook(res.data))
+    }, [])
 
     const handleDelete = () => {
-        axios.delete(`/books/${book['book_id']}`).then(res => console.log(res))
+        axios.delete(`/books/${id}`).then(() => { history.push('/books') })
     }
 
     return (
@@ -30,7 +37,7 @@ function BookDetail() {
                         <ListGroupItem>Review Count: {book['review_count']}</ListGroupItem>
                     </ListGroup>
                     <Card.Body>
-                        <Link to={{ pathname: `/books/${book['book_id']}/edit`, book: book }}>
+                        <Link to={{ pathname: `/books/${id}/edit`, book: book }}>
                             <Button className="mr-2" variant="primary">Edit</Button>
                         </Link>
                         <Button variant="warning" onClick={handleDelete}>Delete</Button>

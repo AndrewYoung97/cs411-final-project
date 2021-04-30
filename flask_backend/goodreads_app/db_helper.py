@@ -10,36 +10,33 @@ homepage search function, return book with given author name and title
 def fetch_book():
     try:
         connection = db.connect()
-        results = connection.execute("SELECT * FROM goodread.newBookTab ORDER BY time_last_access desc limit 0, 10;").fetchall()
-        print("back???2")
+        results = connection.execute("SELECT b.book_id, a.author_name, b.title, b.image_url, b.isbn, b.review_count, b.avg_rating , b.time_last_access FROM author a JOIN newBookTab b ON a.author_id = b.authors WHERE a.author_id = b.authors GROUP BY b.book_id HAVING b.time_last_access > DATE_ADD(MAX(b.time_last_access), INTERVAL -7 DAY) ORDER BY num_access DESC LIMIT 0, 15;").fetchall()
         connection.close()
         output = [dict(row) for row in results]
-
     except Exception as err:
         print(type(err))
         print(err.args)
         return None
-    else:
-        if output == []:
-            return None
-        return jsonify(output)
+    if output == []:
+        return None
+    print(output)
+    return jsonify(output)
 
 
 """
 search book based name and title, return None upon error
 """
-def search_book(info):
+def search_book(title, author):
     try:
         connection = db.connect()
-        title = info['bookTitle']
-        author = info['author']
         #print("title: " + title + " url: "+ url + " isbn: "+ str(isbn) + " author"+ str(author))
         #query = 'CALL search_book("{}", "{}");'.format(title, author)
-        query = "CALL search_book(:t, :a);"
+        query = "CALL get_book(:a, :t);"
         params = {"t": title, "a": author}
         query_results = connection.execute(text(query), params)
         connection.close()
         query_results = [dict(x) for x in query_results]
+        
     except Exception as err:
         print(type(err))
         print(err.args)
@@ -49,6 +46,14 @@ def search_book(info):
             return None
         return jsonify(query_results)
 
+def search_bookID(id):
+    connection = db.connect()
+    query = 'SELECT a.author_name, b.title, b.image_url, b.isbn, b.review_count, b.avg_rating FROM author a JOIN book b ON a.author_id = b.authors WHERE b.book_id = "{}";'.format(id)
+    query_results = connection.execute(query)
+    # print([dict(row) for row in query_results][0])
+    output = [dict(row) for row in query_results][0]
+    print(output)
+    return jsonify(output)
 
 """
 Take author name and add to author table, return new author ID if insert toke place, otherwise return exisiting ID
